@@ -1,0 +1,26 @@
+# Helm Chart for Kubernetes Services
+
+This chart contains the necessary deployments and services for the following components:
+- MariaDB
+- Admin Service
+- Visitor Service
+- Frontend Service
+
+## Configuration
+
+You can configure the following parameters in the values.yaml file:
+
+- mariadb:
+    - rootPassword: The root password for MariaDB
+    - user: The username for the application
+    - password: The password for the application user
+    - database: The name of the database
+
+- adminService:
+    - image: The Docker image for the admin service
+
+- visitorService:
+    - image: The Docker image for the visitor service
+
+- frontendService:
+    - image: The Docker image for the frontend service

@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-service
+spec:
+  selector:
+    app: mariadb
+  ports:
+    - port: {{.Values.service.mariadb.port}}
+      protocol: TCP
+      targetPort: 3306
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-service
+spec:
+  selector:
+    app: admin
+  ports:
+    - protocol: TCP
+      port: {{.Values.service.admin.port}}
+      targetPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visitor-service
+spec:
+  selector:
+    app: visitor
+  ports:
+    - protocol: TCP
+      port: {{.Values.service.visitor.port}}
+      targetPort: 8050
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: {{.Values.service.frontend.port}}
+      targetPort: 3000
+      nodePort: 30003  # NodePort 설정
+  type: NodePort

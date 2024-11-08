@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: {{.Values.image.mariadb.repository}}
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "ubuntu"
+            - name: MYSQL_DATABASE
+              value: "ubuntu"
+            - name: MYSQL_USER
+              value: "ubuntu"
+            - name: MYSQL_PASSWORD
+              value: "ubuntu"
+          volumeMounts:
+            - name: mariadb-init
+              mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+        - name: mariadb-init
+          configMap:
+            name: mariadb-init
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-service
+  labels:
+    app: admin
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: admin
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      initContainers:
+        - name: wait-for-mariadb
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -z mariadb-service 3306; do echo waiting for mariadb; sleep 2; done' ]
+      containers:
+        - name: admin-container
+          image: {{.Values.image.admin.repository}}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: UVICORN_PORT
+              value: "8000"
+          command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visitor-service
+  labels:
+    app: visitor
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: visitor
+  template:
+    metadata:
+      labels:
+        app: visitor
+    spec:
+      initContainers:
+        - name: wait-for-admin-service
+          image: busybox
+          command: ['sh', '-c', 'until nc -z admin-service 8000; do echo waiting for admin-service; sleep 2; done']
+      containers:
+        - name: visitor-container
+          image: {{.Values.image.visitor.repository}}
+          ports:
+            - containerPort: 8050
+          env:
+            - name: UVICORN_PORT
+              value: "8050"
+          command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8050", "--reload"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-service
+  labels:
+    app: frontend
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      initContainers:
+        - name: wait-for-visitor-service
+          image: busybox
+          command: ['sh', '-c', 'until nc -z visitor-service 8050; do echo waiting for visitor-service; sleep 2; done']
+      containers:
+        - name: frontend-container
+          image: {{.Values.image.frontend.repository}}
+          ports:
+            - containerPort: 3000
+          command: ["npm", "start"]
+
