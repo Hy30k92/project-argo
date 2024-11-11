@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   frontend:
-    repository: hy30k/k8s-frontend:fpj
+    repository: hy30k/prj-frontend
     tag: "v1"  # 기본 태그 설정
 
   mariadb:
@@ -14,11 +14,11 @@ image:
     tag: "10.6.19-focal"
 
   admin:
-    repository: hy30k/k8s-admin:fpj
+    repository: hy30k/prj-admin
     tag: "v1"
 
   visitor:
-    repository: hy30k/k8s-visitor:fpj
+    repository: hy30k/prj-visitor
     tag: "v1"
 
 service:
