@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   frontend:
     repository: hy30k/prj-frontend
-    tag: v27
+    tag: v28
 
   mariadb:
     repository: mariadb
@@ -15,11 +15,11 @@ image:
 
   admin:
     repository: hy30k/prj-admin
-    tag: v27
+    tag: v28
 
   visitor:
     repository: hy30k/prj-visitor
-    tag: v27
+    tag: v28
 
 service:
   frontend:
