@@ -6,16 +6,20 @@ replicaCount: 1
 
 image:
   frontend:
-    repository: nanakia1031/prj-frontend
+    repository: hy30k/k8s-frontend:fpj
+    tag: "v1"  # 기본 태그 설정
 
   mariadb:
-    repository: mariadb:10.6.19-focal
+    repository: mariadb
+    tag: "10.6.19-focal"
 
   admin:
-    repository: nanakia1031/prj-admin
+    repository: hy30k/k8s-admin:fpj
+    tag: "v1"
 
   visitor:
-    repository: nanakia1031/prj-visitor
+    repository: hy30k/k8s-visitor:fpj
+    tag: "v1"
 
 service:
   frontend:
