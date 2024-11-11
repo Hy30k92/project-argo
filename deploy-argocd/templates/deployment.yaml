@@ -7,7 +7,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
-  replicas: {{.Values.replicaCount}}
+  replicas: 1
   selector:
     matchLabels:
       app: mariadb
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: mariadb
-          image: {{.Values.image.mariadb.repository}}
+          image: {{.Values.image.mariadb.repository}}:{{.Values.image.mariadb.tag}}
           ports:
             - containerPort: 3306
           env:
@@ -63,7 +63,7 @@ spec:
           command: [ 'sh', '-c', 'until nc -z mariadb-service 3306; do echo waiting for mariadb; sleep 2; done' ]
       containers:
         - name: admin-container
-          image: {{.Values.image.admin.repository}}
+          image: {{.Values.image.admin.repository}}:{{.Values.image.admin.tag}}
           ports:
             - containerPort: 8000
           env:
@@ -96,7 +96,7 @@ spec:
           command: ['sh', '-c', 'until nc -z admin-service 8000; do echo waiting for admin-service; sleep 2; done']
       containers:
         - name: visitor-container
-          image: {{.Values.image.visitor.repository}}
+          image: {{.Values.image.visitor.repository}}:{{.Values.image.visitor.tag}}
           ports:
             - containerPort: 8050
           env:
@@ -129,7 +129,7 @@ spec:
           command: ['sh', '-c', 'until nc -z visitor-service 8050; do echo waiting for visitor-service; sleep 2; done']
       containers:
         - name: frontend-container
-          image: {{.Values.image.frontend.repository}}
+          image: {{.Values.image.frontend.repository}}:{{.Values.image.frontend.tag}}
           ports:
             - containerPort: 3000
           command: ["npm", "start"]
