@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   frontend:
     repository: hy30k/prj-frontend
-    tag: "v1"  # 기본 태그 설정
+    tag: v26
 
   mariadb:
     repository: mariadb
@@ -15,11 +15,11 @@ image:
 
   admin:
     repository: hy30k/prj-admin
-    tag: "v1"
+    tag: v26
 
   visitor:
     repository: hy30k/prj-visitor
-    tag: "v1"
+    tag: v26
 
 service:
   frontend:
