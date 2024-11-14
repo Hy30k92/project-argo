@@ -48,5 +48,5 @@ spec:
     - protocol: TCP
       port: {{.Values.service.frontend.port}}
       targetPort: 3000
-      nodePort: 30003  # NodePort 설정
+      nodePort: 30005  # NodePort 설정
   type: NodePort
